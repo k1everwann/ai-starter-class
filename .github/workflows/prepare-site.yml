@@ -61,9 +61,19 @@ jobs:
                   else:
                       outputs[name] = spec['content']
                   assert isinstance(outputs[name], str), 'Non-text revision'
+              test = outputs['tests/browser_check.py']
+              anchor = "    p.locator('.start-button').click()\n"
+              assert test.count(anchor) == 1
+              test = test.replace(anchor, anchor + "    p.locator('.handoff-step').first.wait_for(state='visible')\n")
+              outputs['tests/browser_check.py'] = test
+              app = outputs['app.js']
+              anchor = "  if($('#guide-prompt-adjust'))$('#guide-prompt-adjust').textContent=guideText('adjust');\n"
+              assert app.count(anchor) == 1
+              app = app.replace(anchor, anchor + "  const recopy=$('[data-action=guide-copy][data-key=adjust]');if(recopy){recopy.textContent='複製這段話';recopy.classList.add('primary');}\n  const reopen=$('[data-open-tool=adjust]');if(reopen)reopen.classList.remove('primary');\n")
+              outputs['app.js'] = app
               for name, text in outputs.items():
                   Path(name).write_text(text, encoding='utf-8')
-              print('Applied eight reviewed source and documentation updates.')
+              print('Applied reviewed source updates with deterministic navigation checks.')
       - name: Install the test browser and Chinese fonts
         run: |
           python -m pip install -r requirements-test.txt
