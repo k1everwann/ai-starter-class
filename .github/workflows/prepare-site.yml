@@ -31,25 +31,39 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Restore verified classroom sources on first run only
+      - name: Apply the reviewed guided-classroom revision if present
         shell: python
         run: |
           from pathlib import Path
           import hashlib, json, lzma
-          parts = sorted(Path('.bootstrap').glob('source.*'))
+          parts = sorted(Path('.bootstrap').glob('guided-v2.*'))
           if parts:
               payload = b''.join(p.read_bytes() for p in parts)
-              expected = '3c1137e620e91d7e80fdf0a2f92e2071962655dadae8cdf0a367d65934bdc41a'
-              assert hashlib.sha256(payload).hexdigest() == expected, 'Source archive checksum mismatch'
-              assert not Path('index.html').exists(), 'Refusing to overwrite an existing site with bootstrap material'
+              assert hashlib.sha256(payload).hexdigest() == 'ff0b68c8c4defbe9112399fce3c895010566877d482e56ed33874f49910f7690', 'Revision checksum mismatch'
               files = json.loads(lzma.decompress(payload))
-              for name, content in files.items():
+              allowed = {'app.js', 'content.js', 'style.css', 'screens.js', 'STUDENT.md', 'GUIDED-UPDATE.md', 'tests/browser_check.py', 'tests/standalone_check.py'}
+              assert set(files) == allowed, 'Unexpected revision paths'
+              outputs = {}
+              for name, spec in files.items():
                   path = Path(name)
-                  assert not path.is_absolute() and '..' not in path.parts, 'Unsafe archive path'
-                  assert '.git' not in path.parts and '.github' not in path.parts, 'Unexpected repository configuration'
-                  assert isinstance(content, str), 'Unexpected binary source'
-                  path.parent.mkdir(parents=True, exist_ok=True)
-                  path.write_text(content, encoding='utf-8')
+                  if 'ops' in spec:
+                      raw = path.read_bytes()
+                      sha = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+                      assert sha == spec['before'], 'Concurrent edit detected: ' + name
+                      old = raw.decode('utf-8')
+                      pos, chunks = 0, []
+                      for start, end, text in spec['ops']:
+                          assert pos <= start <= end <= len(old), 'Invalid patch range'
+                          chunks.extend([old[pos:start], text])
+                          pos = end
+                      chunks.append(old[pos:])
+                      outputs[name] = ''.join(chunks)
+                  else:
+                      outputs[name] = spec['content']
+                  assert isinstance(outputs[name], str), 'Non-text revision'
+              for name, text in outputs.items():
+                  Path(name).write_text(text, encoding='utf-8')
+              print('Applied eight reviewed source and documentation updates.')
       - name: Install the test browser and Chinese fonts
         run: |
           python -m pip install -r requirements-test.txt
@@ -74,22 +88,22 @@ jobs:
           node --check content.js
           node --check starter.js
           node --check screens.js
-      - name: Test interactions and capture twelve screenshots
+      - name: Test guided actions on a real origin and regenerate twelve screenshots
         run: python tests/browser_check.py
       - name: Build and check the downloadable single-file edition
         run: |
           python scripts/build_standalone.py
           python tests/standalone_check.py
           cp ../ai-starter-class-standalone.html ./ai-starter-class-standalone.html
-      - name: Save source, screenshots and test evidence in this repository
+      - name: Save verified source and screenshot updates
         run: |
-          rm -f .bootstrap/source.*
+          rm -f .bootstrap/guided-v2.*
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- .gitignore .nojekyll SOURCES.md STUDENT.md app.js assets content.js example-game.html index.html requirements-test.txt scenario-data.txt screens.js scripts/build_standalone.py starter.js style.css tests ai-starter-class-standalone.html
+          git add -- app.js content.js style.css screens.js tests assets STUDENT.md GUIDED-UPDATE.md ai-starter-class-standalone.html
           git add -u -- .bootstrap || true
           if ! git diff --cached --quiet; then
-            git commit -m 'Publish independent classroom sources, twelve screenshots and verified single-file edition'
+            git commit -m 'Publish guided lessons, local HTML import, safe title editing and verified screenshots'
             git push origin HEAD:main
           fi
       - name: Package the deployable site
@@ -103,9 +117,16 @@ jobs:
           path: _site
           include-hidden-files: true
           retention-days: 14
-      - name: Explain the one-time Pages setting
+      - name: Save verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guided-classroom-verification
+          path: |
+            tests/results.json
+            tests/standalone-results.json
+          retention-days: 14
+      - name: Record publication scope
         run: |
-          echo '## Site files are ready' >> "$GITHUB_STEP_SUMMARY"
-          echo 'This workflow checks and prepares the site; it does not enable GitHub Pages.' >> "$GITHUB_STEP_SUMMARY"
-          echo 'In Settings > Pages, select Deploy from a branch, main, /(root), and Save.' >> "$GITHUB_STEP_SUMMARY"
-          echo 'The final public address is shown by GitHub after deployment succeeds.' >> "$GITHUB_STEP_SUMMARY"
+          echo '## Guided classroom checks finished' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Preparation success is not proof of a GitHub Pages deployment. Check the separate Pages deployment for the published commit.' >> "$GITHUB_STEP_SUMMARY"
