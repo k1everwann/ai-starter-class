@@ -3,7 +3,7 @@
     "Standalone: no external script tags",
     "Standalone: no external stylesheet",
     "Standalone: twelve embedded screenshots",
-    "Standalone: home has four tasks",
+    "Standalone: home keeps four available tasks",
     "Standalone: sandboxed game works",
     "Standalone: embedded screenshot renders",
     "Standalone: mobile has no overflow",

@@ -1,6 +1,5 @@
 from pathlib import Path
-import os
-import json
+import json, os
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 checks=[]
@@ -10,14 +9,14 @@ def ok(name,value=True):
 errors=[]
 html=(ROOT.parent/'ai-starter-class-standalone.html').read_text()
 with sync_playwright() as pw:
-    browser=pw.chromium.launch(executable_path=os.environ.get('CHROMIUM_EXECUTABLE') or ('/usr/bin/chromium' if Path('/usr/bin/chromium').exists() else None),args=['--no-sandbox'])
+    browser=pw.chromium.launch(executable_path=os.environ.get('CHROMIUM_EXECUTABLE','/usr/bin/chromium'),args=['--no-sandbox'])
     p=browser.new_page(viewport={'width':390,'height':844},accept_downloads=True)
     p.on('pageerror',lambda e:errors.append(str(e)))
     p.set_content(html,wait_until='load')
     ok('Standalone: no external script tags',p.locator('script[src]').count()==0)
     ok('Standalone: no external stylesheet',p.locator('link[rel=stylesheet]').count()==0)
     ok('Standalone: twelve embedded screenshots',p.evaluate('SHOTS.length===12 && SHOTS.every(s=>s.src.startsWith("data:image/webp;base64,"))'))
-    ok('Standalone: home has four tasks',p.locator('.task-row').count()==4)
+    ok('Standalone: home keeps four available tasks',p.locator('.task-row').count()==4)
     p.evaluate("location.hash='make/2'");p.wait_for_timeout(100)
     p.locator('[data-action=starter]').click()
     ok('Standalone: sandboxed game works',p.frame_locator('#preview').locator('#word').inner_text()=='discover')
