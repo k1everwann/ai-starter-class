@@ -1,44 +1,42 @@
-# 交付狀態
+# 交付狀態：一步一步引導版
 
-更新日期：2026-10-31（台北時間）
+更新日期：2026-10-31（台北時間）。只修改獨立的 `k1everwann/ai-starter-class`，未修改 `ai-life-lab`。
 
-## 已完成
+網站入口：https://k1everwann.github.io/ai-starter-class/
 
-網站已放進獨立的 `k1everwann/ai-starter-class` 專案，首頁直接使用根目錄 `index.html`。本次未改動 `ai-life-lab`。
+GitHub Pages 已由擁有者啟用，使用 main 分支的根目錄。本次提交用來發布已通過檢查的引導版；最新發布狀態請看此提交對應的 `pages build and deployment` 工作流程，而不是把教材準備流程當成發布證據。
 
-- 四個短任務：問清楚、練英文、找通知、做遊戲。每個任務三步。
-- 十二張本站實際操作截圖，保存在 `assets/screens/`，不引用舊站。
-- 九份虛構練習資料、教師區、紀錄下載與可修改、預覽、下載的單字遊戲。
-- `ai-starter-class-standalone.html`：完整內嵌教材與圖片的離線單檔版。
-- 原始碼、測試程式與測試結果均已保存在本專案；初始傳輸片段已清除。
+## 這次解決的問題
+
+學生原本容易不知道要做什麼、在哪個頁面操作、完成後如何繼續。這次改動的是操作流程，不只是縮短字數。
+
+- 首頁先展示「30 分鐘讀書計畫」這個具體成果，只突出一個「開始第一個任務」按鈕。
+- 第一課改成先複製準備好的問題，再修改一個時間；不再要求先填四個空白提示詞欄位。
+- 每一步標明「現在要在哪裡做」，區分教材、ChatGPT、Codex。
+- 明確帶領「複製 → 開新分頁 → 貼上送出 → 看到回答 → 回教材」，包含貼上快捷鍵與持續顯示的狀態。
+- 下一步按鈕寫出具體動作，不只寫「下一步」。完成仍由學生自行確認，不假裝網站讀得到外部 AI 對話。
+- 操作示意明確標註為預寫示例，不冒充官方產品畫面。
+- 找通知先比較三則能直接閱讀的通知，再讓 AI 整理完整九份虛構資料。貼資料和連接真實帳號分開說明。
+- 做遊戲先看可試玩的預備成品；使用本機 HTML 檔案選取／拖放，不必一開始就貼程式碼。檔案只在本機讀取，不上傳。
+- 可以直接改遊戲標題，原始程式編輯保留為進階選項。改標題是本站程式操作，不宣稱為 AI 生成。
+- 最後一步能直接試玩自己的版本，勾選實測結果並下載 HTML。
+- 保留家長許可、來源核對、權限邊界、清除與匯出功能。程式預覽仍有 sandbox 與 CSP，沒有放寬同源權限。
 
 ## 實際驗證
 
-GitHub Actions 第 3 次執行已全部成功：
-https://github.com/k1everwann/ai-starter-class/actions/runs/41158633728
+引導版準備與測試成功：
+https://github.com/k1everwann/ai-starter-class/actions/runs/41162307579
 
-- `tests/results.json`：117 項通過，未捕捉的 JavaScript 錯誤為 0。
-- `tests/standalone-results.json`：8 項通過，未捕捉的 JavaScript 錯誤為 0。
-- JavaScript 語法、圖片產生、單檔版建置、檔案提交與部署包產生均成功。
-
-先前兩次失敗屬於測試環境：第一次是 Ubuntu 最新版本不相容；第二次使用了作業系統的 Chromium，遇到瀏覽器當機。已固定 Ubuntu 24.04，並明確選用對應 Playwright 版本的 Chromium。沒有刪除測試或放寬網站的 iframe 隔離來讓測試通過。
-
-## 尚未完成：首次啟用公開網址
-
-最後查核時 GitHub Pages 尚未啟用。上述成功結果只代表檔案上傳與測試完成，不代表網站已公開。
-
-請專案擁有者開啟：
-https://github.com/k1everwann/ai-starter-class/settings/pages
-
-選擇 **Deploy from a branch → main → /(root) → Save**。
-
-Pages 部署成功後，預定網址為：
-https://k1everwann.github.io/ai-starter-class/
-
-以 Settings → Pages 顯示的實際發布狀態為準。完整說明見 `DEPLOY.md`。
+- `tests/results.json`：141 項檢查通過，使用真實 localhost HTTP 來源。
+- 包括 clipboard 文字內容、sessionStorage 重新整理恢復、十二步導航、資料來源辨別、HTML 匯入、修改標題、程式預覽隔離、重複計分保護、匯出，以及 390／360px 手機版面。
+- `tests/standalone-results.json`：8 項單檔版檢查通過。
+- 12 張本站操作截圖與單檔 HTML 已按新版重新產生。
+- 所有檢查成功後才將新版原始碼、截圖和單檔版提交。第一次雲端測試遇到路由切換的測試等待問題，已讓檢查等待實際課程區塊出現；沒有刪掉失敗檢查。
 
 ## 驗證界線
 
-本次測試使用實際程式碼的瀏覽器互動，但以 inline set_content 載入。尚未完成公開網址的端到端測試，未驗證真實 AI／Google 帳號授權、Safari 或 Firefox，以及一般網址下的重新整理暫存恢復。
+沒有操作學生或講師的真實 ChatGPT、Codex、Google 帳號；外部工具的介面、可用性及登入由講師課前確認。測試是 Chromium 自動化互動，不是學生試教研究，也不代表所有瀏覽器或學習成效已驗證。
 
-本站操作截圖不是 ChatGPT 或 Codex 的官方介面；固定練習與預備程式不是即時 AI 產出。
+程式與圖解均屬本站教材。自我完成紀錄不是自動評分；固定題目、預備程式、預寫回答都不是即時 AI 回覆。
+
+詳細改動：`GUIDED-UPDATE.md`。學生短版步驟：`STUDENT.md`。
