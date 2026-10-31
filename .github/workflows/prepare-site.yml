@@ -56,6 +56,18 @@ jobs:
           python -m playwright install --with-deps chromium
           sudo apt-get update -qq
           sudo apt-get install -y fonts-noto-cjk
+      - name: Select the browser bundled with this Playwright version
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          with sync_playwright() as p:
+              executable = p.chromium.executable_path
+              assert Path(executable).is_file(), 'Bundled Chromium was not installed'
+              with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as env:
+                  env.write('CHROMIUM_EXECUTABLE=' + executable + '\n')
+              print('Selected matching Chromium:', executable)
       - name: Check JavaScript syntax
         run: |
           node --check app.js
