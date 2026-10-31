@@ -1,0 +1,95 @@
+name: Prepare and check classroom site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.bootstrap/site-source.zip'
+      - '*.html'
+      - '*.js'
+      - '*.css'
+      - 'tests/*.py'
+      - 'requirements-test.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: classroom-site-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unpack the original classroom source on first run only
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib, zipfile
+          archive = Path('.bootstrap/site-source.zip')
+          if archive.exists():
+              expected = 'cdbe9811630c0ee56baa86f495d7a43baef17e5a717b3f5316c0e25608b056b6'
+              assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected, 'Source archive checksum mismatch'
+              assert not Path('index.html').exists(), 'Refusing to overwrite an existing site with bootstrap material'
+              with zipfile.ZipFile(archive) as z:
+                  for entry in z.infolist():
+                      path = Path(entry.filename)
+                      assert not path.is_absolute() and '..' not in path.parts, 'Unsafe archive path'
+                      assert '.git' not in path.parts and '.github' not in path.parts, 'Unexpected repository configuration'
+                  z.extractall('.')
+      - name: Install the test browser and Chinese fonts
+        run: |
+          python -m pip install -r requirements-test.txt
+          python -m playwright install --with-deps chromium
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-noto-cjk
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check content.js
+          node --check starter.js
+          node --check screens.js
+      - name: Test interactions and capture twelve screenshots
+        run: python tests/browser_check.py
+      - name: Build and check the downloadable single-file edition
+        run: |
+          python scripts/build_standalone.py
+          python tests/standalone_check.py
+          cp ../ai-starter-class-standalone.html ./ai-starter-class-standalone.html
+      - name: Save source, screenshots and test evidence in this repository
+        run: |
+          rm -f .bootstrap/site-source.zip
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- .gitignore .nojekyll SOURCES.md STUDENT.md app.js assets content.js example-game.html index.html requirements-test.txt scenario-data.txt screens.js scripts/build_standalone.py starter.js style.css tests ai-starter-class-standalone.html
+          git add -u -- .bootstrap || true
+          if ! git diff --cached --quiet; then
+            git commit -m 'Publish independent classroom sources, twelve screenshots and verified single-file edition'
+            git push origin HEAD:main
+          fi
+      - name: Package the deployable site
+        run: |
+          mkdir -p _site
+          cp index.html style.css app.js content.js starter.js screens.js example-game.html scenario-data.txt ai-starter-class-standalone.html .nojekyll _site/
+          cp -R assets _site/assets
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ai-starter-class-site
+          path: _site
+          include-hidden-files: true
+          retention-days: 14
+      - name: Explain the one-time Pages setting
+        run: |
+          echo '## Site files are ready' >> "$GITHUB_STEP_SUMMARY"
+          echo 'This workflow checks and prepares the site; it does not enable GitHub Pages.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'In Settings > Pages, select Deploy from a branch, main, /(root), and Save.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'The final public address is shown by GitHub after deployment succeeds.' >> "$GITHUB_STEP_SUMMARY"
