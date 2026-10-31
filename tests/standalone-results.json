@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "Standalone: no external script tags",
+    "Standalone: no external stylesheet",
+    "Standalone: twelve embedded screenshots",
+    "Standalone: home has four tasks",
+    "Standalone: sandboxed game works",
+    "Standalone: embedded screenshot renders",
+    "Standalone: mobile has no overflow",
+    "Standalone: no JavaScript errors"
+  ],
+  "count": 8,
+  "errors": []
+}
