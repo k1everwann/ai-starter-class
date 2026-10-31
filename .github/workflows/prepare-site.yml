@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.bootstrap/site-source.zip'
+      - '.bootstrap/**'
       - '*.html'
       - '*.js'
       - '*.css'
@@ -30,22 +30,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Unpack the original classroom source on first run only
+      - name: Restore verified classroom sources on first run only
         shell: python
         run: |
           from pathlib import Path
-          import hashlib, zipfile
-          archive = Path('.bootstrap/site-source.zip')
-          if archive.exists():
-              expected = 'cdbe9811630c0ee56baa86f495d7a43baef17e5a717b3f5316c0e25608b056b6'
-              assert hashlib.sha256(archive.read_bytes()).hexdigest() == expected, 'Source archive checksum mismatch'
+          import hashlib, json, lzma
+          parts = sorted(Path('.bootstrap').glob('source.*'))
+          if parts:
+              payload = b''.join(p.read_bytes() for p in parts)
+              expected = '3c1137e620e91d7e80fdf0a2f92e2071962655dadae8cdf0a367d65934bdc41a'
+              assert hashlib.sha256(payload).hexdigest() == expected, 'Source archive checksum mismatch'
               assert not Path('index.html').exists(), 'Refusing to overwrite an existing site with bootstrap material'
-              with zipfile.ZipFile(archive) as z:
-                  for entry in z.infolist():
-                      path = Path(entry.filename)
-                      assert not path.is_absolute() and '..' not in path.parts, 'Unsafe archive path'
-                      assert '.git' not in path.parts and '.github' not in path.parts, 'Unexpected repository configuration'
-                  z.extractall('.')
+              files = json.loads(lzma.decompress(payload))
+              for name, content in files.items():
+                  path = Path(name)
+                  assert not path.is_absolute() and '..' not in path.parts, 'Unsafe archive path'
+                  assert '.git' not in path.parts and '.github' not in path.parts, 'Unexpected repository configuration'
+                  assert isinstance(content, str), 'Unexpected binary source'
+                  path.parent.mkdir(parents=True, exist_ok=True)
+                  path.write_text(content, encoding='utf-8')
       - name: Install the test browser and Chinese fonts
         run: |
           python -m pip install -r requirements-test.txt
@@ -67,7 +70,7 @@ jobs:
           cp ../ai-starter-class-standalone.html ./ai-starter-class-standalone.html
       - name: Save source, screenshots and test evidence in this repository
         run: |
-          rm -f .bootstrap/site-source.zip
+          rm -f .bootstrap/source.*
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- .gitignore .nojekyll SOURCES.md STUDENT.md app.js assets content.js example-game.html index.html requirements-test.txt scenario-data.txt screens.js scripts/build_standalone.py starter.js style.css tests ai-starter-class-standalone.html
