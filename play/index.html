@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#faf8f3"><meta name="description" content="給 14–18 歲的 AI 課後探索站。選喜歡的主題，三步驟做出自己的作品。">
+<title>AI 口袋任務｜今天想玩什麼？</title>
+<style>
+:root{--bg:#faf8f3;--ink:#22334c;--muted:#5c6a7c;--line:#dedfdc;--blue:#345d9e;--sky:#eaf0f8;--peach:#fff1e7;--orange:#b65b34;--green:#347064}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif}
+a{color:var(--blue);text-underline-offset:4px}button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #316fc4;outline-offset:3px}
+.top{border-bottom:1px solid var(--line);background:#fffdf9}.top-inner{max-width:1040px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 24px}.logo{font-weight:800;text-decoration:none;color:var(--ink);letter-spacing:.02em;font-size:18px}.logo span{color:var(--orange)}.top nav{display:flex;gap:18px;font-size:14px}.top nav a{text-decoration:none;color:var(--muted)}
+main{max-width:1040px;margin:auto;padding:38px 24px 90px}.hero{display:grid;grid-template-columns:1.4fr .8fr;align-items:center;gap:38px;padding:25px 0 44px}.eyebrow{color:var(--orange);font-size:13px;font-weight:800;letter-spacing:.08em}.hero h1{font-size:clamp(33px,5vw,58px);line-height:1.26;letter-spacing:-.045em;margin:12px 0 15px}.hero p{max-width:520px;color:var(--muted);font-size:18px}.hero-demo{border:1px solid var(--line);background:white;border-radius:18px;padding:22px;box-shadow:0 12px 28px #22334c0c;transform:rotate(1deg)}.hero-demo .small{display:block;color:var(--muted);font-size:12px;margin-bottom:15px}.bubble{border-radius:13px;padding:12px 15px;margin:10px 0;font-size:14px;background:#eef3fa}.bubble.you{background:#fff0e5;margin-left:30px}.hero-demo .end{display:flex;align-items:center;gap:10px;color:var(--green);font-size:13px;font-weight:700;margin-top:18px}
+h2{font-size:25px;line-height:1.3;margin:0 0 8px}h3{font-size:19px;line-height:1.4;margin:8px 0}.section-sub{color:var(--muted);margin:0 0 22px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:12px}.card{background:white;border:1px solid var(--line);border-radius:14px;padding:21px;text-align:left;min-height:188px;display:flex;flex-direction:column;gap:10px;transition:transform .13s,border-color .13s}.card:hover{transform:translateY(-2px);border-color:#859bc0}.card.selected{border:2px solid var(--blue);padding:20px;background:#f8fbff}.card .emoji{font-size:28px;line-height:1}.card .card-title{font-size:19px;font-weight:750}.card .desc{color:var(--muted);font-size:14px;line-height:1.55}.card .bottom{margin-top:auto;color:var(--blue);font-size:13px;font-weight:700}
+.card .done{color:var(--green)}.aux{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.plainbtn{border:0;background:none;text-decoration:underline;text-underline-offset:3px;color:var(--blue);padding:8px 0}
+.stage{margin-top:25px;background:#fff;border:1px solid #d5dce5;border-radius:18px;padding:30px;box-shadow:0 6px 30px #1f3e6709}.stage-header{display:flex;align-items:start;justify-content:space-between;gap:15px}.stage .sub{color:var(--muted);margin:5px 0 18px}.step{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;border-top:1px solid var(--line);padding:20px 0}.step-number{border-radius:50%;background:var(--sky);width:34px;height:34px;line-height:34px;text-align:center;font-weight:800;color:var(--blue)}.step p{margin:3px 0 12px;font-size:14px;color:var(--muted)}.step h4{font-size:17px;margin:0}
+label.textlabel{font-weight:700;display:block;margin:12px 0 5px}input[type=text],input[type=number]{border:1px solid #b4bfcb;background:white;border-radius:8px;padding:11px 13px;color:var(--ink);max-width:100%;width:100%}
+button.primary,a.primary{background:var(--blue);color:white;border:1px solid var(--blue);padding:10px 18px;border-radius:9px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:45px}
+button.secondary,a.secondary{background:white;color:var(--blue);border:1px solid #9caec8;padding:10px 16px;border-radius:9px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:45px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}button.primary:hover,a.primary:hover{background:#244778}.prompt{white-space:pre-wrap;overflow-wrap:anywhere;border-left:3px solid #7a9ace;padding:14px 16px;margin:15px 0;background:#f5f7fb;border-radius:0 8px 8px 0;color:#31445c;font-size:14px;max-height:230px;overflow-y:auto}
+.note{background:var(--peach);border-radius:10px;padding:13px 17px;color:#6e3c26;font-size:14px}.result{padding:15px;border-radius:10px;background:#edf8f2;color:#21594f;margin:12px 0}.muted{font-size:13px;color:var(--muted)}.divider{border:0;border-top:1px solid var(--line);margin:38px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}.mini{border-radius:16px;border:1px solid var(--line);background:white;padding:25px}.mini h3{margin:5px 0 8px}.mini p{font-size:14px;color:var(--muted)}.game-row{display:flex;gap:10px;align-items:center}.game-row input{max-width:130px}.game-text{font-weight:700;min-height:32px}.quiz-options{display:flex;gap:8px;flex-wrap:wrap}.quiz-options button{border:1px solid #b4bfcb;background:#fff;padding:10px 14px;border-radius:9px}.quiz-options button:disabled{opacity:.5;cursor:default}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.links a{background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 14px;text-decoration:none;font-size:14px}
+details{border-top:1px solid var(--line);padding:15px 0}details:last-child{border-bottom:1px solid var(--line)}summary{cursor:pointer;font-weight:750}details p{font-size:14px}.footer{border-top:1px solid var(--line);padding:26px 24px;text-align:center;font-size:13px;color:var(--muted)}
+.hidden{display:none!important}.focus{scroll-margin-top:24px}.status{min-height:23px;font-size:13px;color:var(--green);margin:12px 0}.back{margin:0 0 8px;font-size:14px}
+@media(max-width:750px){.hero{grid-template-columns:1fr;gap:8px}.hero-demo{transform:none;max-width:420px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}.top nav{gap:10px}.top-inner{padding:12px 16px}main{padding:25px 16px 60px}.stage{padding:19px}.hero p{font-size:16px}}
+@media(max-width:460px){.hero-demo{display:none}.cards{grid-template-columns:1fr}.card{min-height:110px;padding:15px;display:grid;grid-template-columns:38px 1fr;gap:4px 10px}.card .emoji{grid-row:span 3}.card .desc,.card .bottom{grid-column:2}.card.selected{padding:14px}.top nav{font-size:12px}.step{grid-template-columns:30px 1fr;gap:8px}.step-number{width:28px;height:28px;line-height:28px}.actions a,.actions button{flex:1}.stage-header{display:block}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner"><a class="logo" href="./">AI <span>口袋任務</span></a><nav aria-label="導覽"><a href="#choose">選一個挑戰</a><a href="#play">直接玩</a><a href="#more">更多教學</a></nav></div></header>
+<main>
+<section class="hero" aria-labelledby="hero-title"><div><div class="eyebrow">14–18 歲 · 課後也能自己玩</div><h1 id="hero-title">今天想讓 AI<br>幫你做什麼？</h1><p>不用從頭學一大堆功能。選你喜歡的事，三步就開始。</p><div class="actions"><a href="#choose" class="primary">選我的挑戰 ↓</a><button class="secondary" id="random">不知道選什麼？幫我抽</button></div></div><aside class="hero-demo" aria-label="玩法示意"><span class="small">像這樣，一句話開始</span><div class="bubble you">我喜歡遊戲，可以做一個讓我玩的網頁嗎？</div><div class="bubble">可以！你想用什麼題材？先從簡單的版本開始。</div><div class="end">✓ 你決定主題，AI 幫你做第一版</div></aside></section>
+<section id="choose" class="focus" aria-labelledby="choose-title"><h2 id="choose-title">先選一件你喜歡的事</h2><p class="section-sub">沒有標準答案。選喜歡的，比選「看起來厲害」的更好。</p><div class="cards" id="cards"></div><div class="aux"><span class="muted" id="progress">還沒選挑戰也沒關係。</span><button class="plainbtn" id="resetProgress">清除完成記號</button></div></section>
+<section class="stage hidden focus" id="stage" aria-label="挑戰步驟"><div class="back"><a href="#choose">← 換別的挑戰</a></div><div class="stage-header"><div><span class="eyebrow" id="task-kind"></span><h2 id="task-title"></h2><p class="sub" id="task-output"></p></div><span aria-hidden="true" style="font-size:40px" id="task-emoji"></span></div>
+<div class="step"><div class="step-number">1</div><div><h4>換成你喜歡的主題</h4><p>不知道寫什麼？用預設的也可以。不要填姓名、學號或其他私人資料。</p><label class="textlabel" for="topic">我的主題</label><input id="topic" type="text" maxlength="60" autocomplete="off"><div id="prompt" class="prompt"></div><button class="primary" id="copyPrompt">複製這段話</button></div></div>
+<div class="step"><div class="step-number">2</div><div><h4>開啟工具，把剛剛那段話貼上</h4><p>會開新分頁。在對話輸入框「貼上 → 送出」，之後再回這裡。</p><div class="actions"><a id="openTool" class="primary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">打開 ChatGPT ↗</a><a id="guideLink" href="../index.html#ask/1" target="_blank" rel="noopener noreferrer">不知道怎麼貼？看圖解</a></div><p class="muted">這個網站不會讀取你的聊天，也不會代替你送出問題。</p></div></div>
+<div class="step"><div class="step-number">3</div><div><h4>加一個自己的想法，再試一次</h4><p id="followup-label"></p><div id="followup" class="prompt"></div><div class="actions"><button class="secondary" id="copyFollowup">複製第二句</button><button class="primary" id="doneButton">我完成這個挑戰了 ✓</button></div><div class="status" id="task-status" role="status" aria-live="polite"></div></div></div>
+<div class="note"><strong>重點不是讓 AI 全部幫你完成。</strong> 你要試用、改一個地方，再判斷結果有沒有問題。</div></section>
+<hr class="divider">
+<section id="play" class="focus" aria-labelledby="play-title"><h2 id="play-title">先不用 AI，也可以直接玩</h2><p class="section-sub">這兩個是本站的小練習（不是 AI 產生的即時回答）。先玩一次，想想能不能請 AI 幫你改規則。</p>
+<div class="two"><article class="mini"><div class="eyebrow">挑戰 A</div><h3>猜數字：1 到 20</h3><p>你有 5 次機會。猜錯我會給提示。</p><div class="game-row"><input id="guess" type="number" inputmode="numeric" min="1" max="20" placeholder="輸入 1–20" aria-label="猜一個一到二十的數字"><button class="primary" id="guessButton">猜看看</button></div><p class="game-text" id="guessMessage" role="status" aria-live="polite">準備好了，開始吧！</p><button class="plainbtn" id="restartGame">重新開始</button></article>
+<article class="mini"><div class="eyebrow">挑戰 B</div><h3>哪一則通知比較可信？</h3><p>老師正式說「08:20 東門」，同學轉傳說「聽說 09:00 北門」。你會先相信誰？</p><div class="quiz-options"><button data-answer="official">老師正式通知</button><button data-answer="rumor">同學最新轉傳</button></div><p id="sourceFeedback" class="game-text" role="status" aria-live="polite"></p><p class="muted">這是虛構案例。真實情況要回到原文確認。</p></article></div>
+</section>
+<hr class="divider">
+<section id="more" class="focus"><h2>今天玩得不過癮？</h2><p class="section-sub">這裡有之前的完整練習和操作截圖。現在不用全部做完，想學再打開。</p><div class="links"><a href="../index.html#ask/1">ChatGPT 怎麼問更好 ↗</a><a href="../index.html#find/1">連接器與查資料 ↗</a><a href="../index.html#make/1">Codex 做一個遊戲 ↗</a><a href="../index.html#teacher">給家長／老師的說明 ↗</a></div>
+<details style="margin-top:25px"><summary>AI 真的可以讀我的 Gmail 嗎？</summary><p>需要先連接對應服務並授權，不是只要輸入一句話就能讀取。第一次用請先選虛構資料或老師的示範帳號，別把個人信件隨便開放給工具。</p></details>
+<details><summary>AI 說的事情一定是真的嗎？</summary><p>不一定。考試範圍要跟課本核對，活動時間要跟正式通知核對，生成的遊戲要自己試玩。</p></details>
+<details><summary>沒有 ChatGPT 或 Codex 帳號怎麼辦？</summary><p>可以先玩上面的小遊戲與通知判斷，也可以請家長陪你看示範。未滿 18 歲使用真實帳號需要家長或監護人許可，不能共用帳號。不同帳號能用的工具也可能不同。</p></details>
+</section></main>
+<footer class="footer">AI 口袋任務 · 給 14–18 歲的課後小站 · 不蒐集姓名、帳號或聊天內容 · 非 OpenAI 官方網站</footer>
+<script>
+(function(){
+'use strict';
+var tasks=[
+{id:'game',emoji:'🎮',kind:'想做作品',name:'做自己的小遊戲',desc:'不用懂程式，先做一個可以玩的版本。',output:'一個可以試玩、再自己改規則的小遊戲。',def:'動物',tool:'Codex',url:'https://chatgpt.com/codex',guide:'../index.html#make/1',
+prompt:function(t){return '我想做一個「'+t+'」主題的猜謎小遊戲。請用單一 HTML 檔案，讓我下載後用瀏覽器打開就能玩。\n請先做最簡單的版本：5 題、每題 3 選 1、答對計分、最後有重新開始按鈕。\n不用登入、不用 API key、不連接外部服務。\n完成後教我怎麼開啟，告訴我你真正測試過哪些功能。';},
+next:'可以把背景改成我喜歡的顏色，並讓答錯時顯示提示嗎？請只改這兩件事。'},
+{id:'music',emoji:'🎧',kind:'喜歡的主題',name:'音樂／動漫小測驗',desc:'用自己喜歡的作品，讓 AI 出題考你。',output:'一份你可以考朋友的問答題。',def:'我最近喜歡的動漫',tool:'ChatGPT',url:'https://chatgpt.com/',guide:'../index.html#learn/1',
+prompt:function(t){return '我喜歡「'+t+'」。請幫我設計 5 題有趣的小測驗，一次問我一題，等我回答再解釋。\n如果涉及作品的真實資料，請說明哪些資訊你不確定，不要編造情節或答案。\n先不要一次公布所有答案。';},
+next:'難度可以提高一點嗎？請讓我自己回答，再公布答案和解釋。'},
+{id:'study',emoji:'📚',kind:'課業不無聊',name:'讓 AI 當家教',desc:'先回答，再拿提示，不是直接抄答案。',output:'三題練習，以及你自己會解釋的一個觀念。',def:'英文單字',tool:'ChatGPT',url:'https://chatgpt.com/',guide:'../index.html#learn/1',
+prompt:function(t){return '我想練習「'+t+'」。請先問我現在在學哪個章節或提供哪些資料，再根據我提供的內容一題一題考我。\n一次只問一題；答錯先提示，不要直接公布答案。\n練習三題後，請我用自己的話說一次重點。';},
+next:'我還不懂。可以換成生活中的例子，但先讓我自己再答一次嗎？'},
+{id:'plan',emoji:'🗓️',kind:'生活小幫手',name:'規劃自己的時間',desc:'把不想做的一堆事情，排成簡單計畫。',output:'一張真正排得進時間的計畫表。',def:'背英文＋寫數學',tool:'ChatGPT',url:'https://chatgpt.com/',guide:'../index.html#ask/1',
+prompt:function(t){return '我今天有 30 分鐘，要做「'+t+'」，中間想休息 5 分鐘。\n請幫我安排簡單的時間表，列出「幾分鐘／做什麼」，總和不能超過 30 分鐘。\n如果事情太多做不完，請明確告訴我應該先做什麼。';},
+next:'現在我只有 20 分鐘。請重新安排，保留休息時間，並幫我檢查分鐘數有沒有加錯。'},
+{id:'find',emoji:'🔍',kind:'判斷真偽',name:'當一次資料偵探',desc:'當消息打架，學會找真正的來源。',output:'一張有依據的集合提醒。',def:'校外教學',tool:'ChatGPT',url:'https://chatgpt.com/',guide:'../index.html#find/1',
+prompt:function(t){return '這是「'+t+'」的虛構練習資料：\n[A] 老師 5/10 通知：5/14 08:00 西門集合。\n[B] 老師 5/12 正式更新：因施工，改成 08:20 東門集合。\n[C] 同學 5/12 轉傳：聽說 09:00 北門？沒有證實。\n請告訴我該用哪個集合時間與地點，並寫出來源字母。不能只看誰發得比較晚。\n資料沒有提到的事，請寫「待確認」。';},
+next:'假如我想在行事曆提醒自己，應該寫什麼？先給我草稿，不要真的修改任何資料。'}
+];
+var selected=null, progress={};
+try{progress=JSON.parse(localStorage.getItem('ai-pocket-progress')||'{}')||{};}catch(e){progress={};}
+function persist(){try{localStorage.setItem('ai-pocket-progress',JSON.stringify(progress));}catch(e){}}
+function by(id){return document.getElementById(id);}
+function renderCards(){
+var area=by('cards');area.replaceChildren();
+tasks.forEach(function(t){
+var b=document.createElement('button');b.type='button';b.className='card'+(selected===t.id?' selected':'');b.setAttribute('aria-pressed',selected===t.id?'true':'false');
+var icon=document.createElement('span');icon.className='emoji';icon.textContent=t.emoji;
+var title=document.createElement('span');title.className='card-title';title.textContent=t.name;
+var desc=document.createElement('span');desc.className='desc';desc.textContent=t.desc;
+var foot=document.createElement('span');foot.className='bottom'+(progress[t.id]?' done':'');foot.textContent=progress[t.id]?'✓ 已經玩過':'打開這個挑戰 →';
+b.append(icon,title,desc,foot);b.addEventListener('click',function(){showTask(t.id);});area.appendChild(b);
+});
+var count=tasks.filter(function(t){return !!progress[t.id];}).length;
+by('progress').textContent=count?('你已完成 '+count+' / '+tasks.length+' 個挑戰。這只是自己的記號，不是成績。'):'每個挑戰都可以自己決定要不要完成。';
+}
+function currentTask(){return tasks.find(function(t){return t.id===selected;});}
+function refreshPrompt(){var t=currentTask();if(!t)return;var val=by('topic').value.trim().slice(0,60)||t.def;by('prompt').textContent=t.prompt(val);}
+function showTask(id){
+selected=id;var t=currentTask();if(!t)return;
+by('stage').classList.remove('hidden');by('task-kind').textContent=t.kind;by('task-title').textContent=t.name;by('task-output').textContent='完成後，你會得到：'+t.output;by('task-emoji').textContent=t.emoji;
+by('topic').value=t.def;refreshPrompt();by('followup-label').textContent='先看看第一版，再把這一句貼到同一個對話：';by('followup').textContent=t.next;
+by('openTool').textContent='打開 '+t.tool+'（新分頁）↗';by('openTool').href=t.url;by('guideLink').href=t.guide;
+by('task-status').textContent=progress[id]?'這張任務卡已標記完成。你仍可再玩一次。':'';
+renderCards();by('stage').scrollIntoView({behavior:'smooth',block:'start'});
+}
+async function copyText(s){
+try{await navigator.clipboard.writeText(s);return true;}catch(e){
+var t=document.createElement('textarea');t.value=s;t.style.position='fixed';t.style.left='-9999px';document.body.appendChild(t);t.select();var ok=false;try{ok=document.execCommand('copy');}catch(e2){}t.remove();return ok;
+}}
+by('topic').addEventListener('input',refreshPrompt);
+by('copyPrompt').addEventListener('click',async function(){var ok=await copyText(by('prompt').textContent);by('task-status').textContent=ok?'已複製！下一步按「打開工具」，貼上後送出。':'複製沒有成功，請長按文字手動複製。';});
+by('copyFollowup').addEventListener('click',async function(){var ok=await copyText(by('followup').textContent);by('task-status').textContent=ok?'已複製第二句，貼到剛才的同一個對話。':'請手動複製第二句。';});
+by('doneButton').addEventListener('click',function(){if(!selected)return;progress[selected]=true;persist();renderCards();by('task-status').textContent='完成！現在可以挑另一張，也可以把作品拿給家人看看。';});
+by('random').addEventListener('click',function(){var t=tasks[Math.floor(Math.random()*tasks.length)];showTask(t.id);});
+by('resetProgress').addEventListener('click',function(){progress={};persist();renderCards();if(selected)by('task-status').textContent='已清除完成記號，教材和遊戲不受影響。';});
+var secret=1+Math.floor(Math.random()*20), remaining=5,finished=false;
+function restart(){secret=1+Math.floor(Math.random()*20);remaining=5;finished=false;by('guess').value='';by('guessButton').disabled=false;by('guessMessage').textContent='新的一局！你還有 5 次機會。';}
+function guess(){if(finished)return;var v=Number(by('guess').value);if(!Number.isInteger(v)||v<1||v>20){by('guessMessage').textContent='請輸入 1 到 20 的整數。';return;}remaining--;if(v===secret){finished=true;by('guessButton').disabled=true;by('guessMessage').textContent='答對了！就是 '+secret+'。想再玩可以重新開始。';return;}if(remaining===0){finished=true;by('guessButton').disabled=true;by('guessMessage').textContent='這次沒猜到，答案是 '+secret+'。再玩一次？';return;}by('guessMessage').textContent=(v<secret?'再大一點！':'再小一點！')+' 剩下 '+remaining+' 次機會。';}
+by('guessButton').addEventListener('click',guess);by('guess').addEventListener('keydown',function(e){if(e.key==='Enter')guess();});by('restartGame').addEventListener('click',restart);
+document.querySelectorAll('[data-answer]').forEach(function(btn){btn.addEventListener('click',function(){var yes=btn.getAttribute('data-answer')==='official';by('sourceFeedback').textContent=yes?'答對了！老師的正式更新才是較可靠的來源。':'再想一下：晚一點傳出的「聽說」，不代表比較可靠。';});});
+renderCards();
+})();
+</script>
+</body></html>
